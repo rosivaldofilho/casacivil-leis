@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/Layout.xhtml"
+                xmlns:b="http://bootsfaces.net/ui">
+    <ui:define name="content">
+        <f:metadata>
+            <f:event listener="#{leiBean.inicializarLeis}" type="preRenderView"/>
+        </f:metadata>
+        <h1 class="aw-page-title">Leis</h1>
+        <h:form id="formulario" enctype="multipart/form-data" role="form" class="form-horizontal">
+            <!--<h:commandLink class="">
+                    <p:graphicImage library="images" name="/icones/Graphicloads-Filetype-Excel-xls.ico"  width="32"/>
+                    <p:dataExporter type="pdf" target="tabelaLei" fileName="cars" pageOnly="true"/>
+                </h:commandLink>-->
+            <p:dataTable id="tabelaLei" value="#{leiBean.model}" var="lei" tableStyleClass="table table-striped table-condensed dataTable table-hover" 
+                         paginator="true" widgetVar="leisTabela" emptyMessage="Nenhum lei cadastrado por enquanto..." rows="10" class=""
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,15,20" reflow="false" rowHover="true" lazy="true" selectionMode="single" rowKey="#{lei.numero}">
+
+                <f:facet name="header">
+
+                    <b:button value="Novo Lei" icon="glyphicon glyphicon-plus" class="btn btn-primary" outcome="/lei/cadastro" col-xs="12" col-lg="2" col-md="3"/>
+                    <p:outputPanel style="display: inline; float: right;">
+                        <h:outputText value="Buscar: " />
+                        <p:inputText  id="globalFilter" value="#{leiBean.filtro.descricao}" placeholder="Digite sua busca"
+                                      onkeypress="if (event.keyCode === 13) {onchange();return false;}" >
+                            <p:ajax update="formulario:tabelaLei"/>
+                        </p:inputText>
+                    </p:outputPanel>
+                    <div style="clear: both;"></div>
+
+                </f:facet>
+
+                <p:ajax event="rowSelect" listener="#{leiBean.onRowSelect}" />
+                <p:column class="numeroLeiLargura" headerText="Nº" filterBy="#{lei.numero}" priority="0">
+                    <h:outputText value="#{lei.numero}"/>
+                </p:column>
+
+                <p:column class="dataCadastroLargura" headerText="Data de Cadastro" sortBy="#{lei.dataCadastro}" priority="3">
+                    <h:outputText value="#{lei.dataCadastro}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Ementa" filterBy="#{lei.ementa}" priority="1" >
+                    <h:outputText value="#{lei.ementa}" escape="false"/>
+                </p:column>
+
+                <p:column headerText="Data" sortBy="#{lei.dataLei}" priority="4" width="12%">
+                    <h:outputText value="#{lei.dataLei}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputText>
+                </p:column>
+                
+                <p:column headerText="Ações" priority="2" style="width: 6.2em;">
+
+                    <div class="form-horizontal">
+
+                        <p:button icon="ui-icon-pencil" class="btn btn-info waves-effect" outcome="/lei/cadastro">
+                            <f:param name="lei" value="#{lei.numero}"/>
+                        </p:button>
+
+
+                        <!--                                    <div class="pull-right">
+                                                                <p:commandButton value="Excluir" class="btn btn-danger  waves-effect" action=""
+                                                                                 update="@form" process="@this"/>
+                                                            </div>-->
+                    </div>
+
+
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
